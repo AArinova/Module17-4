@@ -17,7 +17,7 @@ async def all_users(sess: Sess):
     return sess.scalars(select(User)).all()
 
 
-@router.get('/user_id')
+@router.get('/{user_id}')
 async def user_by_id(sess: Sess, user_id: int):
     user = sess.scalar(select(User).where(User.id == user_id))
     if not user:
@@ -37,7 +37,7 @@ async def create_user(sess: Sess, user: CreateUser) -> dict:
             'transaction': 'Successful'}
 
 
-@router.put('/update')
+@router.put('/update/{user_id}')
 async def update_user(sess: Sess, user: UpdateUser, user_id: int) -> dict:
     if not sess.scalar(select(User.id).where(User.id == user_id)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User was not found')
@@ -47,7 +47,7 @@ async def update_user(sess: Sess, user: UpdateUser, user_id: int) -> dict:
             'transaction': 'User has been updated successfully'}
 
 
-@router.delete('/delete')
+@router.delete('/delete/{user_id}')
 async def delete_user(sess: Sess, user_id: int) -> dict:
     if not sess.scalar(select(User.id).where(User.id == user_id)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User was not found')
@@ -56,5 +56,5 @@ async def delete_user(sess: Sess, user_id: int) -> dict:
     return {'status_code': status.HTTP_200_OK,
             'transaction': 'User has been deleted successfully'}
 
-router = APIRouter(prefix='/user', tags=['user'])
+
 
